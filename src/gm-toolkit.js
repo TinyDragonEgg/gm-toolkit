@@ -1324,7 +1324,29 @@ function injectStyles() {
 // Registration
 // ---------------------------------------------------------------------------
 
-Hooks.once("init",  () => { registerSettings(); });
+Hooks.once("init", () => {
+  registerSettings();
+
+  // Sidebar Settings tab — inject button every time the tab renders
+  Hooks.on("renderSettings", (app, html) => {
+    if (!game.user?.isGM) return;
+    // v13 may pass jQuery; normalise to a raw HTMLElement
+    const el = (html instanceof HTMLElement) ? html : (html[0] ?? html);
+    if (!el?.querySelector) return;
+    const section = el.querySelector("#settings-game")
+      ?? el.querySelector(".settings-list")
+      ?? el.querySelector("section")
+      ?? el;
+    if (section.querySelector(".gmt-sidebar-btn")) return; // already injected
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "gmt-sidebar-btn";
+    btn.textContent = "Tiny's GM Toolkit";
+    btn.style.cssText = "margin-top:6px;width:100%;";
+    btn.addEventListener("click", () => { injectStyles(); new GMToolkit().render({ force: true }); });
+    section.appendChild(btn);
+  });
+});
 
 Hooks.once("ready", () => {
   if (!game.user.isGM) return;
@@ -1332,18 +1354,4 @@ Hooks.once("ready", () => {
 
   game.modules.get(MODULE_ID).api ??= {};
   game.modules.get(MODULE_ID).api.open = () => { injectStyles(); new GMToolkit().render({ force: true }); };
-
-  Hooks.on("renderSettings", (app, html) => {
-    if (!game.user.isGM) return;
-    const section = html.querySelector("#settings-game")
-      ?? html.querySelector(".settings-list")
-      ?? html.querySelector("section")
-      ?? html;
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.textContent = "Tiny's GM Toolkit";
-    btn.style.cssText = "margin-top:6px;width:100%;";
-    btn.addEventListener("click", () => { injectStyles(); new GMToolkit().render({ force: true }); });
-    section.appendChild(btn);
-  });
 });
