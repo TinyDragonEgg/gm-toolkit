@@ -1320,16 +1320,19 @@ Hooks.once("ready", () => {
   injectStyles();
 
   game.modules.get(MODULE_ID).api ??= {};
-  game.modules.get(MODULE_ID).api.open = () => { injectStyles(); new GMToolkit().render(true); };
+  game.modules.get(MODULE_ID).api.open = () => { injectStyles(); new GMToolkit().render({ force: true }); };
 
   Hooks.on("renderSettings", (app, html) => {
     if (!game.user.isGM) return;
-    const section = html.querySelector("#settings-game") ?? html.querySelector(".settings-list");
-    if (!section) return;
+    const section = html.querySelector("#settings-game")
+      ?? html.querySelector(".settings-list")
+      ?? html.querySelector("section")
+      ?? html;
     const btn = document.createElement("button");
-    btn.textContent = "GM Toolkit";
+    btn.type = "button";
+    btn.textContent = "Tiny's GM Toolkit";
     btn.style.cssText = "margin-top:6px;width:100%;";
-    btn.addEventListener("click", () => { injectStyles(); new GMToolkit().render(true); });
+    btn.addEventListener("click", () => { injectStyles(); new GMToolkit().render({ force: true }); });
     section.appendChild(btn);
   });
 });
