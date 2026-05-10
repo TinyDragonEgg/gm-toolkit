@@ -39,6 +39,17 @@ const IPA_DEFAULT_ROOTS = [
 ];
 
 function registerSettings() {
+  game.settings.registerMenu(MODULE_ID, "launcher", {
+    name: "Open GM Toolkit",
+    label: "Open",
+    hint: "Launch Tiny's GM Toolkit panel.",
+    icon: "fas fa-toolbox",
+    type: class extends Application {
+      render() { injectStyles(); new GMToolkit().render({ force: true }); }
+    },
+    restricted: true,
+  });
+
   game.settings.register(MODULE_ID, SETTINGS.API_KEY, {
     name: "Claude API Key", hint: "Your Anthropic API key (sk-ant-...)",
     scope: "world", config: true, type: String, default: "",
