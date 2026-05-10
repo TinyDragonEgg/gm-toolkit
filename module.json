@@ -1,6 +1,6 @@
 {
   "id": "gm-toolkit",
-  "title": "GM Toolkit",
+  "title": "Tiny's GM Toolkit",
   "description": "GM-only toolkit for Foundry VTT v13. Six tabs: Claude AI assistant with world context, debug dump generator, folder structure scanner and reorganizer, GM console error log, hotkey conflict analyzer, and image path auditor.",
   "version": "{{version}}",
   "compatibility": {

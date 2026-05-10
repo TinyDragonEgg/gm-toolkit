@@ -503,7 +503,7 @@ class GMToolkit extends ApplicationV2 {
   static DEFAULT_OPTIONS = {
     id: "gm-toolkit",
     classes: ["gm-toolkit"],
-    window: { title: "GM Toolkit", resizable: true },
+    window: { title: "Tiny's GM Toolkit", resizable: true },
     position: { width: 860, height: 680 },
   };
 
