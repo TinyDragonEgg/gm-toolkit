@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stamp version into module.json
+        run: sed -i "s/{{version}}/${GITHUB_REF_NAME}/g" module.json
+
+      - name: Build zip
+        run: |
+          zip -r gm-toolkit.zip \
+            module.json \
+            src/ \
+            languages/ \
+            LICENSE \
+            README.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: |
+            Install via Foundry module manager using the manifest URL, or download the zip below.
+
+            **Manifest:** `https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/module.json`
+          files: |
+            gm-toolkit.zip
+            module.json
