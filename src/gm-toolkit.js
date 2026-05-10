@@ -497,17 +497,15 @@ function ipaShowPreview(result) {
 // ApplicationV2 UI
 // ---------------------------------------------------------------------------
 
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+const { ApplicationV2 } = foundry.applications.api;
 
-class GMToolkit extends HandlebarsApplicationMixin(ApplicationV2) {
+class GMToolkit extends ApplicationV2 {
   static DEFAULT_OPTIONS = {
     id: "gm-toolkit",
     classes: ["gm-toolkit"],
     window: { title: "GM Toolkit", resizable: true },
     position: { width: 860, height: 680 },
   };
-
-  static PARTS = { main: { template: null } };
 
   constructor() {
     super({});
