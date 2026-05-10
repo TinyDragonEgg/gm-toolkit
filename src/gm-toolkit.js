@@ -1324,28 +1324,26 @@ function injectStyles() {
 // Registration
 // ---------------------------------------------------------------------------
 
-Hooks.once("init", () => {
-  registerSettings();
+Hooks.on("renderSettings", (app, html) => {
+  if (!game.user?.isGM) return;
+  const el = (html instanceof HTMLElement) ? html : (html[0] ?? html);
+  if (!el?.querySelector) return;
+  const section = el.querySelector("#settings-game")
+    ?? el.querySelector(".settings-list")
+    ?? el.querySelector("section")
+    ?? el;
+  if (section.querySelector(".gmt-sidebar-btn")) return;
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "gmt-sidebar-btn";
+  btn.textContent = "Tiny's GM Toolkit";
+  btn.style.cssText = "margin-top:6px;width:100%;";
+  btn.addEventListener("click", () => { injectStyles(); new GMToolkit().render({ force: true }); });
+  section.appendChild(btn);
+});
 
-  // Sidebar Settings tab — inject button every time the tab renders
-  Hooks.on("renderSettings", (app, html) => {
-    if (!game.user?.isGM) return;
-    // v13 may pass jQuery; normalise to a raw HTMLElement
-    const el = (html instanceof HTMLElement) ? html : (html[0] ?? html);
-    if (!el?.querySelector) return;
-    const section = el.querySelector("#settings-game")
-      ?? el.querySelector(".settings-list")
-      ?? el.querySelector("section")
-      ?? el;
-    if (section.querySelector(".gmt-sidebar-btn")) return; // already injected
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "gmt-sidebar-btn";
-    btn.textContent = "Tiny's GM Toolkit";
-    btn.style.cssText = "margin-top:6px;width:100%;";
-    btn.addEventListener("click", () => { injectStyles(); new GMToolkit().render({ force: true }); });
-    section.appendChild(btn);
-  });
+Hooks.once("init", () => {
+  try { registerSettings(); } catch(e) { console.error("[GM Toolkit] registerSettings failed:", e); }
 });
 
 Hooks.once("ready", () => {
